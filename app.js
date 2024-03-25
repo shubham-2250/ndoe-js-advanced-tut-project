@@ -14,10 +14,11 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "public")));
 
+//registering routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
-
 app.use(pageNotFoundRoutes);
+
 app.listen(8000);
 // const server = http.createServer(app);
 

@@ -9,7 +9,12 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProducts = (req, res, next) => {
-  const product = new Product(req.body.title);
+  const product = new Product(
+    req.body.title,
+    req.body.imageURL,
+    req.body.description,
+    req.body.price
+  );
   product.save();
   res.redirect("/");
 };
@@ -18,7 +23,7 @@ exports.getProducts = (req, res, next) => {
   products = Product.fetchAll((products) => {
     res.render("admin/products", {
       prods: products,
-      pageTitle: "All Products",
+      pageTitle: "Admin Products",
       path: "/admin/products",
     });
   });
