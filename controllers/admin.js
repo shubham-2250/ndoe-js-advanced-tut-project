@@ -30,9 +30,10 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getEditProducts = (req, res, next) => {
-  res.render("admin/edit-products", {
-    prods: products,
+  const editMode = req.query.edit === "true";
+  res.render("admin/edit-product", {
     pageTitle: "All Products",
-    path: "/admin/edit-products",
+    path: "/admin/edit-product",
+    editing: editMode,
   });
 };
