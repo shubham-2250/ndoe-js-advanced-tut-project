@@ -2,20 +2,19 @@ const fs = require("fs");
 const path = require("path");
 const rootDir = require("../utils/path");
 
-const getCart = (cb) => {
-  const p = path.join(rootDir, "data", "cart.json");
-  fs.readFile(p, (err, fileContent) => {
-    let cart = { products: [], totalPrice: 0 };
-    if (!err) {
-      cart = JSON.parse(fileContent);
-    }
-    cb(cart, p);
-  });
-};
-
 module.exports = class Cart {
+  static getCart(cb) {
+    const p = path.join(rootDir, "data", "cart.json");
+    fs.readFile(p, (err, fileContent) => {
+      let cart = { products: [], totalPrice: 0 };
+      if (!err) {
+        cart = JSON.parse(fileContent);
+      }
+      cb(cart, p);
+    });
+  }
   static addProduct(id, productPrice, cb) {
-    getCart((cart, p) => {
+    this.getCart((cart, p) => {
       const exsistingProduc = cart.products.find((prod) => prod.id === id);
       let updatedProduct;
       if (exsistingProduc) {
@@ -38,7 +37,7 @@ module.exports = class Cart {
   }
 
   static deleteProduct(id, productPrice, cb) {
-    getCart((cart, p) => {
+    this.getCart((cart, p) => {
       const indx = cart.products.findIndex((item) => item.id === id);
       if (indx != -1) {
         cart.totalPrice =
@@ -50,6 +49,7 @@ module.exports = class Cart {
           cb();
         });
       }
+      cb();
     });
   }
 };
