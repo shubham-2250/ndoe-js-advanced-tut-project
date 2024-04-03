@@ -5,6 +5,7 @@
         <%- include('../includes/navigation.ejs') %>
             <main>
                 <% if(products.length> 0) {%>
+                    <h2>Total Price <%= totalPrice %></h2>
                     <ul>
                         <% products.forEach(p=> { %>
 
