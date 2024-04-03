@@ -15,23 +15,49 @@ const getProductsFromFile = (cb) => {
 };
 
 module.exports = class Product {
-  constructor(title, imageURL, description, price) {
+  constructor(id, title, imageURL, description, price) {
     this.title = title;
     this.imageURL = imageURL;
     this.description = description;
     this.price = price;
+    this.id = id;
   }
 
   save() {
-    this.id = Math.random().toString();
     getProductsFromFile((products, p) => {
-      products.push(this);
+      if (this.id) {
+        const index = products.findIndex((item) => item.id === this.id);
+        products[index] = { ...this };
+      } else {
+        this.id = Math.random().toString();
+        products.push(this);
+      }
+
       fs.writeFile(p, JSON.stringify(products), { flag: "w" }, (err) => {
         console.log(err);
       });
     });
   }
 
+  delete() {
+    getProductsFromFile((products, p) => {
+      products.delete(this);
+      fs.writeFile(p, JSON.stringify(products), { flag: "w" }, (err) => {
+        console.log(err);
+      });
+    });
+  }
+
+  update() {
+    getProductsFromFile((products, p) => {
+      const id = this.id;
+      const index = products.findIndex((item) => item.id === id);
+      products[index] = this;
+      fs.writeFile(p, JSON.stringify(products), { flag: "w" }, (err) => {
+        console.log(err);
+      });
+    });
+  }
   static fetchAll(cb) {
     getProductsFromFile(cb);
   }
