@@ -45,18 +45,20 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId, (product) => {
-    Cart.addProduct(product.id, product.price);
-    console.log("productDetail", prodId);
-    res.redirect("/cart");
+    Cart.addProduct(product.id, product.price, () => {
+      console.log("productDetail", prodId);
+      res.redirect("/cart");
+    });
   });
 };
 
 exports.postDeleteCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId, (product) => {
-    Cart.deleteProduct(product.id, product.price);
-    console.log("productDetail", prodId);
-    res.redirect("/cart");
+    Cart.deleteProduct(product.id, product.price, () => {
+      console.log("productDetail", prodId);
+      res.redirect("/cart");
+    });
   });
 };
 

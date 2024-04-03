@@ -14,7 +14,7 @@ const getCart = (cb) => {
 };
 
 module.exports = class Cart {
-  static addProduct(id, productPrice) {
+  static addProduct(id, productPrice, cb) {
     getCart((cart, p) => {
       const exsistingProduc = cart.products.find((prod) => prod.id === id);
       let updatedProduct;
@@ -32,11 +32,12 @@ module.exports = class Cart {
       cart.totalPrice = cart.totalPrice + +productPrice;
       fs.writeFile(p, JSON.stringify(cart), (err) => {
         console.log(err);
+        cb();
       });
     });
   }
 
-  static deleteProduct(id, productPrice) {
+  static deleteProduct(id, productPrice, cb) {
     getCart((cart, p) => {
       const indx = cart.products.findIndex((item) => item.id === id);
       if (indx != -1) {
@@ -46,6 +47,7 @@ module.exports = class Cart {
 
         fs.writeFile(p, JSON.stringify(cart), (err) => {
           console.log(err);
+          cb();
         });
       }
     });
