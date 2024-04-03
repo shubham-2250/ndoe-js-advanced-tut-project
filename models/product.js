@@ -39,25 +39,15 @@ module.exports = class Product {
     });
   }
 
-  delete() {
+  remove() {
     getProductsFromFile((products, p) => {
-      products.delete(this);
+      products.delete((item) => this.id !== item.id);
       fs.writeFile(p, JSON.stringify(products), { flag: "w" }, (err) => {
         console.log(err);
       });
     });
   }
 
-  update() {
-    getProductsFromFile((products, p) => {
-      const id = this.id;
-      const index = products.findIndex((item) => item.id === id);
-      products[index] = this;
-      fs.writeFile(p, JSON.stringify(products), { flag: "w" }, (err) => {
-        console.log(err);
-      });
-    });
-  }
   static fetchAll(cb) {
     getProductsFromFile(cb);
   }
@@ -65,6 +55,15 @@ module.exports = class Product {
     getProductsFromFile((products) => {
       const product = products.find((p) => p.id === id);
       cb(product);
+    });
+  }
+  static deleteById(id, cb) {
+    getProductsFromFile((products, p) => {
+      products = products.filter((p) => p.id !== id);
+      fs.writeFile(p, JSON.stringify(products), { flag: "w" }, (err) => {
+        console.log(err);
+        cb();
+      });
     });
   }
 };
