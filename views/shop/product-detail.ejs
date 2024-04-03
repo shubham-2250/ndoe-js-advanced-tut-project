@@ -12,5 +12,6 @@
             <h2><%= product.price %></h2>
             <p><%=product.description %></p>
             <%- include('../includes/add-to-cart.ejs') %>
+            <%- include('../includes/delete-from-cart.ejs',{product : product}) %>
         </main>
         <%- include('../includes/end.ejs') %>

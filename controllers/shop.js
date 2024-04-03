@@ -51,6 +51,15 @@ exports.postCart = (req, res, next) => {
   });
 };
 
+exports.postDeleteCart = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.findById(prodId, (product) => {
+    Cart.deleteProduct(product.id, product.price);
+    console.log("productDetail", prodId);
+    res.redirect("/cart");
+  });
+};
+
 exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
