@@ -2,21 +2,24 @@ const Product = require("../models/product");
 const Cart = require("../models/cart");
 
 exports.getIndex = (req, res, next) => {
-  products = Product.fetchAll((products) => {
-    console.log("shop.js\n", products);
-    res.render("shop/index", {
-      prods: products,
-      pageTitle: "Shop",
-      path: "/",
+  products = Product.fetchAll()
+    .then(([rows, fieldData]) => {
+      res.render("shop/index", {
+        prods: rows,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 exports.getProducts = (req, res, next) => {
-  products = Product.fetchAll((products) => {
+  products = Product.fetchAll().then(([rows, fieldNames]) => {
     console.log("shop.js\n", products);
     res.render("shop/product-list", {
-      prods: products,
+      prods: rows,
       pageTitle: "All Products",
       path: "/products",
     });
@@ -38,22 +41,29 @@ exports.getProduct = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   Cart.getCart((cart) => {
     const cartProducts = [];
-    Product.fetchAll((products) => {
-      for (product of products) {
-        const cartProductData = cart.products.find(
-          (prod) => prod.id === product.id
-        );
-        if (cartProductData) {
-          cartProducts.push({ productData: product, qty: cartProductData.qty });
+    Product.fetchAll()
+      .then(([products, fields]) => {
+        {
+          for (product of products) {
+            const cartProductData = cart.products.find(
+              (prod) => prod.id === product.id
+            );
+            if (cartProductData) {
+              cartProducts.push({
+                productData: product,
+                qty: cartProductData.qty,
+              });
+            }
+          }
+          res.render("shop/cart", {
+            pageTitle: "Your Cart",
+            path: "/cart",
+            products: cartProducts,
+            totalPrice: cart.totalPrice,
+          });
         }
-      }
-      res.render("shop/cart", {
-        pageTitle: "Your Cart",
-        path: "/cart",
-        products: cartProducts,
-        totalPrice: cart.totalPrice,
-      });
-    });
+      })
+      .catch((err) => console.log(err));
   });
 };
 
