@@ -36,8 +36,12 @@ exports.postEditProducts = (req, res, next) => {
     req.body.price
   );
 
-  productNew.save();
-  res.redirect("/admin/products");
+  productNew
+    .save()
+    .then(() => {
+      res.redirect("/admin/products");
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -61,12 +65,14 @@ exports.getProducts = (req, res, next) => {
 exports.getEditProducts = (req, res, next) => {
   const editMode = req.query.edit === "true";
   const prodID = req.params.productId;
-  Product.findById(prodID, (product) => {
-    res.render("admin/edit-product", {
-      pageTitle: "All Products",
-      path: "/admin/edit-product",
-      editing: editMode,
-      product: product,
-    });
-  });
+  Product.findById(prodID)
+    .then(([product]) => {
+      res.render("admin/edit-product", {
+        pageTitle: "All Products",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: { ...product },
+      });
+    })
+    .catch((err) => console.log(err));
 };
